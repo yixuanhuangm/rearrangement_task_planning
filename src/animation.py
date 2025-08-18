@@ -20,10 +20,6 @@ def animate_mrb(disks, move_sequence, steps_per_action=20):
     -------
     matplotlib.animation.FuncAnimation
         Animation object for interactive display.
-
-    中文说明
-    --------
-    在3D中动态展示MRB圆盘重排过程，含缓冲和移动动画。
     """
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -49,6 +45,10 @@ def animate_mrb(disks, move_sequence, steps_per_action=20):
         positions[disk_id] = end
         if action == 'move' and disk_id in buffer_set:
             buffer_set.remove(disk_id)
+        
+    pause_frames = 20 
+    for _ in range(pause_frames):
+        frames.append((frames[-1][0].copy(), frames[-1][1].copy()))  # 复制最后一帧
 
     def update_frame(frame_idx):
         ax.cla()
