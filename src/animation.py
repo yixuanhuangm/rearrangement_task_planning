@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from .utils import draw_disk_3d
+from .visualization import *
 
 def animate_mrb(disks, move_sequence, steps_per_action=20):
     """
