@@ -23,7 +23,7 @@ This project is inspired by the work of **Professor Jingjin Yu** at Rutgers Univ
 * **src/animation.py**: Functions to animate disk movements.
 * **examples/run_mrb_demo.py**: Demonstrates the planning and animation of disk rearrangements.
 
-## Experimental Tasks
+<!-- ## Experimental Tasks -->
 
 ## Task Status
 

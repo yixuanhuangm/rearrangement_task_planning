@@ -121,7 +121,7 @@ def move_from_origin(remaining_set, buffer_set, current_positions, disks_dict, m
             remaining_set.remove(disk_id)
             moved = True
 
-    return moved
+        return moved
 
 
 def move_from_buffer(buffer_set, current_positions, disks_dict, move_sequence, remaining_set):
@@ -150,7 +150,7 @@ def move_from_buffer(buffer_set, current_positions, disks_dict, move_sequence, r
     for disk_id in list(buffer_set):
         disk = disks_dict[disk_id]
         if not is_goal_blocked(disk, current_positions, disks_dict):
-            move_sequence.append((disk_id, 'move'))
+            move_sequence.append((disk_id, 'move from buffer'))
             current_positions[disk_id] = disk.goal_pos
             buffer_set.remove(disk_id)
             remaining_set.remove(disk_id)
@@ -183,12 +183,10 @@ def plan_mrb_sequence(disks):
     buffer = generate_buffer_positions(disks, current_positions, gap=2.0)
 
     while remaining or buffer_set:
+        print(f"Buffer: {buffer_set}, Buffer Size: {len(buffer_set)}")
         if move_from_buffer(buffer_set, current_positions, disks_dict, move_sequence, remaining):
             continue
-        if move_from_origin(remaining, buffer_set, current_positions, disks_dict, move_sequence, buffer):
-            continue
-        print("Warning: deadlock detected!")
-        break
+        move_from_origin(remaining, buffer_set, current_positions, disks_dict, move_sequence, buffer)
 
     return move_sequence
 

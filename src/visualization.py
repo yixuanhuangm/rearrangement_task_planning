@@ -49,6 +49,6 @@ def visualize_dependency_graph(graph):
     """
     pos = nx.spring_layout(graph)
     plt.figure()
-    nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=1000, arrowsize=20)
+    nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=500, arrowsize=20)
     plt.title("Dependency Graph")
     plt.show(block=False)

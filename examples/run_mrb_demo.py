@@ -13,7 +13,7 @@ def main():
     - Animate the rearrangement
     """
     # disks = generate_manual_disks(positions, goals)
-    disks = generate_random_disks_no_overlap(num_disks=3, x_range=(0, 1), y_range=(0, 1), radius=0.05)
+    disks = generate_random_disks_no_overlap(num_disks=20, x_range=(0, 1), y_range=(0, 1), radius=0.05)
     visualize_disks(disks, plane_z=0)
 
     dependency_graph = build_dependency_graph(disks)
