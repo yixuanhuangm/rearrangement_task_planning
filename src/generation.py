@@ -157,3 +157,68 @@ def generate_random_disks_no_overlap(
 
     disks = [Disk(i, colors[i], start_positions[i], goal_positions[i], radius) for i in range(num_disks)]
     return disks
+
+def generate_random_unlabeled_disks(
+    num_disks,
+    x_range=(0, 1),
+    y_range=(0, 1),
+    seed=None,
+    radius=0.02,
+    max_attempts=1000
+):
+    """
+    Generate disks for unlabeled MRB problems (goal positions are interchangeable),
+    ensuring no overlap at start and goal positions.
+
+    Parameters
+    ----------
+    num_disks : int
+        Number of disks to generate.
+    x_range : tuple
+        Horizontal range for positions.
+    y_range : tuple
+        Vertical range for positions.
+    seed : int or None
+        Random seed for reproducibility.
+    radius : float
+        Radius of all disks.
+    max_attempts : int
+        Maximum attempts to place a disk without overlap.
+
+    Returns
+    -------
+    list of Disk
+        Randomly generated disks with start and goal positions, unlabeled.
+    """
+    if seed is not None:
+        np.random.seed(seed)
+
+    colors = plt.cm.tab20(np.linspace(0, 1, num_disks))
+    start_positions = []
+    goal_positions = []
+    radii_list = []
+
+    # 生成起始位置
+    for i in range(num_disks):
+        for _ in range(max_attempts):
+            pos = np.random.uniform([x_range[0], y_range[0]], [x_range[1], y_range[1]])
+            if not check_overlap_with_list(pos, radius, start_positions, radii_list):
+                start_positions.append(pos)
+                radii_list.append(radius)
+                break
+        else:
+            raise ValueError(f"Cannot place disk {i} without overlap in start positions")
+
+    # 对目标位置，只需要生成一组无重叠的位置即可
+    for i in range(num_disks):
+        for _ in range(max_attempts):
+            pos = np.random.uniform([x_range[0], y_range[0]], [x_range[1], y_range[1]])
+            if not check_overlap_with_list(pos, radius, goal_positions, radii_list):
+                goal_positions.append(pos)
+                break
+        else:
+            raise ValueError(f"Cannot place disk {i} without overlap in goal positions")
+
+    # 对于无标签问题，目标位置可互换，因此 disk_id 与 goal 之间不固定
+    disks = [Disk(i, colors[i], start_positions[i], goal_positions[i], radius) for i in range(num_disks)]
+    return disks

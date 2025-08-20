@@ -28,8 +28,8 @@ This project is inspired by the work of **Professor Jingjin Yu** at Rutgers Univ
 ## Task Status
 
 - [X] Naive traversal algorithm implemented.
-- [ ] Depth-First Search (DFS) based planning.
-- [ ] Brute-force search algorithm.
+- [X] Depth-First Search (DFS) based planning.
+- [X] Brute-force search algorithm.
 - [ ] Extend planning algorithms to handle more complex object interactions and constraints.
 - [ ] Optimize visualization and motion planning for larger scenes.
 
