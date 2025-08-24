@@ -30,13 +30,14 @@ def build_dependency_graph(disks):
     return G
 
 
-def is_goal_blocked(disk, occupied_positions, disks_dict):
+def is_goal_blocked(disk, occupied_positions, disks_dict, buffer_set):
     """
     Check if a disk's goal position is blocked by other disks.
     """
     for other_id, pos in occupied_positions.items():
-        if other_id != disk.id and check_overlap(disk.goal_pos, pos, disk.radius, disks_dict[other_id].radius):
-            return True
+        if not other_id in buffer_set:
+            if other_id != disk.id and check_overlap(disk.goal_pos, pos, disk.radius, disks_dict[other_id].radius):
+                return True
     return False
 
 
@@ -50,7 +51,7 @@ def move_from_origin(remaining_set, buffer_set, occupied_positions, disks_dict, 
             continue
 
         disk = disks_dict[disk_id]
-        if is_goal_blocked(disk, occupied_positions, disks_dict):
+        if is_goal_blocked(disk, occupied_positions, disks_dict, buffer_set):
             move_sequence.append((disk_id, 'buffer'))
             occupied_positions[disk_id] = buffer_zone[disk_id]
             buffer_set.add(disk_id)
@@ -71,7 +72,7 @@ def move_from_buffer(buffer_set, occupied_positions, disks_dict, move_sequence, 
     moved = False
     for disk_id in list(buffer_set):
         disk = disks_dict[disk_id]
-        if not is_goal_blocked(disk, occupied_positions, disks_dict):
+        if not is_goal_blocked(disk, occupied_positions, disks_dict, buffer_set):
             move_sequence.append((disk_id, 'move from buffer'))
             occupied_positions[disk_id] = disk.goal_pos
             buffer_set.remove(disk_id)
@@ -127,6 +128,21 @@ def move_with_dependencies(node_id, disks_dict, occupied_positions, buffer_set, 
         return
 
     visited.add(node_id)
+
+    for visited_node in list(buffer_set):
+        disk = disks_dict[visited_node]
+        goal_pos = disk.goal_pos
+
+        goal_blocked = any(
+        check_overlap(goal_pos, occupied_positions[other_id], disk.radius, disks_dict[other_id].radius)
+        for other_id in occupied_positions if other_id != node_id
+        )
+
+        if not goal_blocked:
+            move_sequence.append((visited_node, 'move from buffer'))
+            occupied_positions[visited_node] = goal_pos
+            buffer_set.remove(visited_node)
+
 
     for dep in G.successors(node_id):
         if dep not in visited:
